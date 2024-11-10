@@ -13,6 +13,7 @@ public class RegistrationPage {
     private By emailField = By.xpath("(//input[@name='name'])[2]");
     private By passwordField = By.xpath("//input[@name='Пароль']");
     private By passwordErrorField = By.xpath("//p[@class='input__error text_type_main-default' and text()='Некорректный пароль']");
+    private By userErrorField = By.xpath("//p[@class='input__error text_type_main-default' and text()='Такой пользователь уже существует']");
     private By regButton = By.xpath("//button[text()='Зарегистрироваться']");
     private By loginButton = By.xpath("//a[text()='Войти']");
 
@@ -44,18 +45,30 @@ public class RegistrationPage {
     public void waitElementToBeClickable() {
         new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(regButton));
     }
+
     @Step("Ожидание, пока кнопка 'Войти' станет кликабельной")
     public void waitLoginButtonToBeClickable() {
         new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(loginButton));
     }
 
     @Step("Проверить наличие сообщения об ошибке пароля")
-    public boolean isErrorMessagePresent() {
+    public boolean isErrorMessagePresentPassword() {
         try {
             driver.findElement(passwordErrorField);
             return true;
         } catch (NoSuchElementException e) {
-            System.out.println("Element not found: " + e.getMessage());
+            System.out.println("Элемент не найден " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Step("Проверить наличие сообщения об ошибке пользователя")
+    public boolean isErrorMessagePresentUser() {
+        try {
+            driver.findElement(userErrorField);
+            return true;
+        } catch (NoSuchElementException e) {
+            System.out.println("Элемент не найден " + e.getMessage());
             return false;
         }
     }

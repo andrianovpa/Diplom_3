@@ -1,5 +1,7 @@
 import api.DeleteUserApi;
 import api.LoginUserApi;
+import base.URL;
+import io.qameta.allure.junit4.DisplayName;
 import model.LoginUser;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -11,7 +13,6 @@ import resources.SwitchBrowserClass;
 
 @RunWith(Parameterized.class)
 public class TestRegistration {
-    private static String browser;
     private static String accessToken;
     private static String name;
     private static String email;
@@ -19,28 +20,27 @@ public class TestRegistration {
     private WebDriver driver;
     private boolean expectError;
 
-    public TestRegistration(String name, String email, String password, boolean expectError, String browser) {
+    public TestRegistration(String name, String email, String password, boolean expectError) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.expectError = expectError;
-        this.browser = browser;
     }
 
     @Parameterized.Parameters
-    public static Object[][] getCredentials() {
+    public static Object[][] testParameters() {
         return new Object[][]{
-                {"Pavel", "andrianovpa@gmail.com", "1234", true, "chrome"},
-                {"Pavel", "andrianovpa@gmail.com", "1234567", false, "chrome"},
-                {"Pavel", "andrianovpa@gmail.com", "1234", true, "firefox"},
-                {"Pavel", "andrianovpa@gmail.com", "1234567", false, "firefox"}
+                {"Pavel", "andrianovpa@gmail.com", "1234", true},
+                {"Pavel", "andrianovpa@gmail.com", "1234567", false},
+                {"Pavel", "andrianovpa@gmail.com", "1234", true},
+                {"Pavel", "andrianovpa@gmail.com", "1234567", true}
         };
     }
 
     @Before
     public void startUp() {
-        driver = SwitchBrowserClass.createDriver(browser);
-        driver.get("https://stellarburgers.nomoreparties.site/register");
+        driver = SwitchBrowserClass.getDriver();
+        driver.get(URL.REGISTER_HOST);
 
     }
 
@@ -60,6 +60,7 @@ public class TestRegistration {
     }
 
     @Test
+    @DisplayName("Тест регистрации пользователя")
     public void testRegistrationUser() {
         RegistrationPage objRegistrationPage = new RegistrationPage(driver);
         objRegistrationPage.waitElementToBeClickable();
@@ -68,9 +69,14 @@ public class TestRegistration {
         objRegistrationPage.setPasswordField(password);
         objRegistrationPage.clickRegButton();
         if (expectError) {
-            Assert.assertTrue(objRegistrationPage.isErrorMessagePresent());
+            if (objRegistrationPage.isErrorMessagePresentPassword()) {
+                Assert.assertTrue(objRegistrationPage.isErrorMessagePresentPassword());
+            }
+            if (objRegistrationPage.isErrorMessagePresentUser()) {
+                Assert.assertTrue(objRegistrationPage.isErrorMessagePresentUser());
+            }
         } else {
-            Assert.assertFalse(objRegistrationPage.isErrorMessagePresent());
+            Assert.assertFalse(objRegistrationPage.isErrorMessagePresentPassword());
             LoginPage objLoginPage = new LoginPage(driver);
             objLoginPage.waitElementToBeClickable();
             objLoginPage.setEmailField(email);
@@ -78,7 +84,7 @@ public class TestRegistration {
             objLoginPage.clickLoginButton();
             objLoginPage.waitForVisibilityOfTitle();
             accessToken = objLoginPage.getAccessToken();
-            Assert.assertNotEquals(null, accessToken);
+            Assert.assertNotNull(accessToken);
         }
     }
 }

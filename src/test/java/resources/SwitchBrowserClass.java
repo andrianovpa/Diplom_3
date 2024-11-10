@@ -5,21 +5,34 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class SwitchBrowserClass {
-    public static WebDriver createDriver(String browser) {
-        WebDriver driver;
-        switch (browser.toLowerCase()) {
-            case "chrome":
-                WebDriverManager.chromedriver().setup();
-                driver = new ChromeDriver();
-                break;
-            case "firefox":
-                WebDriverManager.firefoxdriver().setup();
-                driver = new FirefoxDriver();
-                break;
-            default:
-                throw new IllegalArgumentException("Не поддерживаемый класс: " + browser);
+
+    public static WebDriver getDriver() {
+        Properties properties = new Properties();
+
+        try (InputStream input = SwitchBrowserClass.class.getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new RuntimeException("Не удалось найти файл config.properties");
+            }
+            properties.load(input);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return driver;
+
+        String browser = properties.getProperty("browser");
+
+        if ("chrome".equalsIgnoreCase(browser)) {
+            WebDriverManager.chromedriver().setup();
+            return new ChromeDriver();
+        } else if ("firefox".equalsIgnoreCase(browser)) {
+            WebDriverManager.firefoxdriver().setup();
+            return new FirefoxDriver();
+        } else {
+            throw new RuntimeException("Браузер не поддерживается: " + browser);
+        }
     }
 }

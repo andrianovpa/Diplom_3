@@ -1,39 +1,27 @@
 import api.CreateUserApi;
 import api.DeleteUserApi;
 import api.LoginUserApi;
+import base.URL;
+import io.qameta.allure.junit4.DisplayName;
 import model.CreateUser;
 import model.LoginUser;
 import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 import pageproject.LoginPage;
 import pageproject.MainPage;
 import pageproject.PersonalAccountPage;
 import resources.SwitchBrowserClass;
 
-@RunWith(Parameterized.class)
+
 public class TestLogOut {
     private WebDriver driver;
 
-    public TestLogOut(String browser) {
-        this.browser = browser;
-    }
 
-    private static String browser;
     private static String name = "Pavel";
     private static String email = "andrainovpa@gmail.com";
     private static String password = "1234567";
     private static String accessToken;
 
-
-    @Parameterized.Parameters
-    public static Object[][] getCredentials() {
-        return new Object[][]{
-                {"chrome"},
-                {"firefox"}
-        };
-    }
 
     @BeforeClass
     public static void CreateUser() {
@@ -45,8 +33,8 @@ public class TestLogOut {
 
     @Before
     public void startUp() {
-        driver = SwitchBrowserClass.createDriver(browser);
-        driver.get("https://stellarburgers.nomoreparties.site/login");
+        driver = SwitchBrowserClass.getDriver();
+        driver.get(URL.LOGIN_HOST);
         LoginPage objLoginPage = new LoginPage(driver);
         objLoginPage.login(email, password);
     }
@@ -67,7 +55,8 @@ public class TestLogOut {
     }
 
     @Test
-    public void LogOutTest() {
+    @DisplayName("Проверка выхода из учётной записи")
+    public void logOutTest() {
         MainPage objmainPage = new MainPage(driver);
         objmainPage.waitForVisibilityOfTitle();
         objmainPage.clickPersonalAccount();

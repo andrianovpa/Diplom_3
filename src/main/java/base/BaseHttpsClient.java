@@ -12,7 +12,7 @@ import static io.restassured.RestAssured.given;
 public abstract class BaseHttpsClient {
     private RequestSpecification baseRequestSpec() {
         return new RequestSpecBuilder()
-                .setBaseUri(URL.PLACEHOLDER_HOST)
+                .setBaseUri(URL.MAIN_HOST)
                 .addHeader("Content-type", "application/json")
                 .setRelaxedHTTPSValidation()
                 .addFilter(new RequestLoggingFilter())

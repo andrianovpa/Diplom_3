@@ -1,22 +1,20 @@
 import api.CreateUserApi;
 import api.DeleteUserApi;
 import api.LoginUserApi;
+import base.URL;
+import io.qameta.allure.junit4.DisplayName;
 import model.CreateUser;
 import model.LoginUser;
 import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 import pageproject.LoginPage;
 import pageproject.MainPage;
 import pageproject.PersonalAccountPage;
 import resources.SwitchBrowserClass;
 
-@RunWith(Parameterized.class)
+
 public class TransitionTests {
-    public TransitionTests(String browser) {
-        this.browser = browser;
-    }
+
 
     private static String browser;
     private WebDriver driver;
@@ -25,13 +23,6 @@ public class TransitionTests {
     private static String password = "1234567";
     private static String accessToken;
 
-    @Parameterized.Parameters
-    public static Object[][] getCredentials() {
-        return new Object[][]{
-                {"chrome"},
-                {"firefox"}
-        };
-    }
 
     @BeforeClass
     public static void CreateUser() {
@@ -43,8 +34,8 @@ public class TransitionTests {
 
     @Before
     public void startUp() {
-        driver = SwitchBrowserClass.createDriver(browser);
-        driver.get("https://stellarburgers.nomoreparties.site/login");
+        driver = SwitchBrowserClass.getDriver();
+        driver.get(URL.LOGIN_HOST);
         LoginPage objLoginPage = new LoginPage(driver);
         objLoginPage.login(email, password);
     }
@@ -65,6 +56,7 @@ public class TransitionTests {
     }
 
     @Test
+    @DisplayName("Тест Перехода в личный кабинет по кнопке 'Личный кабинет'")
     public void testTransitionToPersonalAccount() {
         MainPage objMainPage = new MainPage(driver);
         objMainPage.clickPersonalAccount();
@@ -73,6 +65,7 @@ public class TransitionTests {
     }
 
     @Test
+    @DisplayName("Тест Перехода к конструктору по кнопке 'Конструктор'")
     public void testTransitionToConstructor() {
         MainPage objMainPage = new MainPage(driver);
         objMainPage.clickPersonalAccount();
@@ -82,6 +75,7 @@ public class TransitionTests {
     }
 
     @Test
+    @DisplayName("Тест Перехода к конструктору по логотипу")
     public void testTransitionToConstructorWithLogo() {
         MainPage objMainPage = new MainPage(driver);
         objMainPage.clickPersonalAccount();

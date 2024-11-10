@@ -1,6 +1,7 @@
 package pageproject;
 
 import io.qameta.allure.Step;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -17,6 +18,9 @@ public class MainPage {
     private By bunHeader = By.xpath("//h2[text()='Булки']");
     private By saucesHeader = By.xpath("//h2[text()='Соусы']");
     private By fillingsHeader = By.xpath("//h2[text()='Начинки']");
+    private By activeFillingsTab = By.xpath("//div[contains(@class, 'tab_tab_type_current') and .//span[text()='Начинки']]");
+    private By activeSaucesTab = By.xpath("//div[contains(@class, 'tab_tab_type_current') and .//span[text()='Соусы']]");
+    private By activeBunsTab = By.xpath("//div[contains(@class, 'tab_tab_type_current') and .//span[text()='Булки']]");
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
@@ -66,12 +70,34 @@ public class MainPage {
     public void waitForVisibilityOfFillingsHeader() {
         new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(fillingsHeader));
     }
+
     @Step("Ожидание, пока кнопка 'Личный кабинет' станет кликабельной")
     public void waitPersonalAccountToBeClickable() {
         new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(personalAccount));
     }
+
     @Step("Ожидание, пока кнопка 'Войти в аккаунт' станет кликабельной")
     public void waitLoginButtonToBeClickable() {
         new WebDriverWait(driver, 30).until(ExpectedConditions.elementToBeClickable(loginButton));
+    }
+
+    @Step("Проверка заголовка 'Начинки' в конструкторе")
+    public void assertTitleFillings() {
+        Assert.assertTrue(new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(fillingsHeader)).isDisplayed());
+    }
+
+    @Step("Проверка активации вкладки 'Начинки' в конструкторе")
+    public void assertTitleTabFillings() {
+        Assert.assertTrue(new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(activeFillingsTab)).isDisplayed());
+    }
+
+    @Step("Проверка активации вкладки 'Соусы' в конструкторе")
+    public void assertTitleTabSauces() {
+        Assert.assertTrue(new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(activeSaucesTab)).isDisplayed());
+    }
+
+    @Step("Проверка активации вкладки 'Булки' в конструкторе")
+    public void assertTitleTabBuns() {
+        Assert.assertTrue(new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(activeBunsTab)).isDisplayed());
     }
 }
